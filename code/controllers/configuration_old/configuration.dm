@@ -35,6 +35,7 @@
 	var/list/probabilities = list()		// relative probability of each mode
 	var/list/player_requirements = list() // Overrides for how many players readied up a gamemode needs to start.
 	var/list/player_requirements_secret = list() // Same as above, but for the secret gamemode.
+	var/players_waiting_required = 0	// Total 'waiting' and 'ready' players needed for 'waiting' status to be counted as 'ready'. Readied players will bypass this depending on gamemode, e.g. Extended requires 0 readied players, therefore a single ready player + 2 waiting and not ready = ready player starting a round alone while the 2 waiting players are left in the lobby.
 	var/humans_need_surnames = 0
 	var/allow_random_events = 0			// enables random events mid-round when set to 1
 	var/enable_game_master = 0			// enables the 'smart' event system.
@@ -377,6 +378,9 @@
 							log_misc("Unknown game mode player requirement configuration definition: [req_name].")
 					else
 						log_misc("Incorrect player requirement configuration definition: [req_name]  [req_value].")
+
+				if("players_waiting_required")
+					config_legacy.players_waiting_required = value
 
 				if("allow_random_events")
 					config_legacy.allow_random_events = 1

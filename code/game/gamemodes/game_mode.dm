@@ -154,13 +154,36 @@ var/global/list/additional_antag_types = list()
 		else
 			message_admins("[antag_summary]")
 
+/client/proc/set_player_wait_thresh()
+	set category = "Server"
+	set name = "Set Wait"
+
+	var/pwait = input("New wait quantity:","Set") as num | null
+	if(pwait <1)
+		pwait = 1
+		to_chat(src, "<span class='warning'>Setting to less than 1 would break things. 1 is functionally equivalent to off. To permanently disable see legacy configs.</span>")
+	config_legacy.players_waiting_required = pwait
+
 ///can_start()
 ///Checks to see if the game can be setup and ran with the current number of players or whatnot.
 /datum/game_mode/proc/can_start(var/do_not_spawn)
 	var/playerC = 0
+	var/playerW = 0
+	var/playerCW = 0
 	for(var/mob/new_player/player in GLOB.player_list)
-		if((player.client)&&(player.ready))
+		if((player.client)&&(player.ready)&&(!player.waiting))
 			playerC++
+		if((player.client)&&(!player.ready)&&(player.waiting))
+			playerW++
+		if((player.client)&&(player.ready)&&(player.waiting))
+			playerCW++
+
+	if(playerW + playerC + playerCW >= config_legacy.players_waiting_required)
+		playerC += playerCW
+		for(var/mob/new_player/player in GLOB.player_list)
+			if((player.waiting)&&(!player.ready))
+				player.ready = 1
+				playerC++
 
 	if(master_mode=="secret")
 		if(playerC < config_legacy.player_requirements_secret[config_tag])

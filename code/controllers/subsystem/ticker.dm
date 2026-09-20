@@ -162,10 +162,13 @@ SUBSYSTEM_DEF(ticker)
 
 /datum/controller/subsystem/ticker/proc/how_many_players_have_readied_up()
 	var/ready = FALSE
+	var/waiting = FALSE
 	for(var/client/C in GLOB.clients)
 		if(istype(C.mob, /mob/new_player))
 			var/mob/new_player/p = C.mob
-			ready += p.ready
+			if(p.ready && !p.waiting) ready += p.ready
+			else if(p.waiting) waiting += p.waiting
+	if (waiting >= config_legacy.players_waiting_required) ready += waiting
 	return ready
 
 /datum/controller/subsystem/ticker/proc/handle_no_players_ready()
