@@ -303,7 +303,7 @@ var/list/admin_verbs_hideable = list(
 	/datum/admins/proc/delay_start,
 	/datum/admins/proc/delay_end,
 	/datum/admins/proc/toggleaban,
-	/client/proc/set_player_wait_thresh
+	/client/proc/set_player_wait_thresh,
 	/client/proc/everyone_random,
 	/client/proc/reload_configuration,
 	/datum/admins/proc/toggleAI,
