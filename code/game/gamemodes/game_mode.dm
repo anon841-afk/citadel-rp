@@ -166,25 +166,7 @@ var/global/list/additional_antag_types = list()
 
 ///can_start()
 ///Checks to see if the game can be setup and ran with the current number of players or whatnot.
-/datum/game_mode/proc/can_start(var/do_not_spawn)
-	var/playerC = 0
-	var/playerW = 0
-	var/playerCW = 0
-	for(var/mob/new_player/player in GLOB.player_list)
-		if((player.client)&&(player.ready)&&(!player.waiting))
-			playerC++
-		if((player.client)&&(!player.ready)&&(player.waiting))
-			playerW++
-		if((player.client)&&(player.ready)&&(player.waiting))
-			playerCW++
-
-	if(playerW + playerC + playerCW >= config_legacy.players_waiting_required)
-		playerC += playerCW
-		for(var/mob/new_player/player in GLOB.player_list)
-			if((player.waiting)&&(!player.ready))
-				player.ready = 1
-				playerC++
-
+/datum/game_mode/proc/can_start(var/playerC = 0)
 	if(master_mode=="secret")
 		if(playerC < config_legacy.player_requirements_secret[config_tag])
 			return 0

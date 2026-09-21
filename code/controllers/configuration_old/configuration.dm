@@ -380,7 +380,7 @@
 						log_misc("Incorrect player requirement configuration definition: [req_name]  [req_value].")
 
 				if("players_waiting_required")
-					config_legacy.players_waiting_required = value
+					config_legacy.players_waiting_required = text2num(value)
 
 				if("allow_random_events")
 					config_legacy.allow_random_events = 1
@@ -554,10 +554,10 @@
 			return M
 	return gamemode_cache["extended"]
 
-/datum/configuration_legacy/proc/get_runnable_modes()
+/datum/configuration_legacy/proc/get_runnable_modes(var/playerC = 0)
 	var/list/runnable_modes = list()
 	for(var/game_mode in gamemode_cache)
 		var/datum/game_mode/M = gamemode_cache[game_mode]
-		if(M && M.can_start() && !isnull(config_legacy.probabilities[M.config_tag]) && config_legacy.probabilities[M.config_tag] > 0)
+		if(M && M.can_start(playerC) && !isnull(config_legacy.probabilities[M.config_tag]) && config_legacy.probabilities[M.config_tag] > 0)
 			runnable_modes |= M
 	return runnable_modes
